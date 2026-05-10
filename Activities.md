@@ -1,2 +1,23 @@
-# ETIA_32443_Lab_ET/2021/004
-Lab_Activities
+
+
+#include <avr/io.h>
+#include <util/delay.h>
+
+int main(void)
+{
+    
+    DDRB |= (1 << DDB0);
+
+    while (1)
+    {
+       
+        PORTB |= (1 << PB0);
+        delay(1000);
+
+        
+        PORTB &= ~(1 << PB0);
+        delay(1000);
+    }
+
+    return 0; 
+}
