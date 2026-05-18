@@ -9,6 +9,7 @@ void setup()
 }
 
 void loop()
+
 {
   
   if (PIND & (1 << PD3)) {
@@ -16,6 +17,7 @@ void loop()
     PORTD |= (1 << PD1);
     PORTD |= (1 << PD2);
   }
+  
   else {
     PORTB &= ~(1 << PB0);
     PORTD &= ~(1 << PD2);
