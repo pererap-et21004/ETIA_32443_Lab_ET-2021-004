@@ -1,0 +1,55 @@
+
+#define F_CPU 16000000UL
+#include <avr/io.h>
+#include <util/delay.h>
+
+void ADC_init() {
+    
+    ADMUX = (1 << REFS0);
+    ADCSRA = (1 << ADEN) | (1 << ADPS2) | (1 << ADPS1) | (1 << ADPS0);
+}
+
+uint16_t ADC_read(uint8_t channel) {
+    
+    ADMUX = (ADMUX & 0xF0) | (channel & 0x0F);
+ 
+    ADCSRA |= (1 << ADSC);
+    
+    while (ADCSRA & (1 << ADSC));
+    return ADC; 
+}
+
+int main(void) {
+   
+    DDRB |= (1 << DDB0) | (1 << DDB1); // Set LEDs as output
+    DDRC &= ~((1 << DDC0) | (1 << DDC1) | (1 << DDC2)); // Set inputs
+
+    ADC_init();
+
+   
+    const uint16_t GAS_THRESHOLD = 123; 
+
+    while (1) {
+      
+        uint16_t ldr_val = ADC_read(0);
+        uint16_t pot_val = ADC_read(1);
+        uint16_t gas_val = ADC_read(2);
+
+      
+     
+        if (ldr_val < pot_val) {
+            PORTB |= (1 << PORTB0); 
+        } else {
+            PORTB &= ~(1 << PORTB0);
+        }
+
+       
+        if (gas_val > GAS_THRESHOLD) {
+            PORTB |= (1 << PORTB1);
+        } else {
+            PORTB &= ~(1 << PORTB1);
+        }
+
+        _delay_ms(50); // Small delay for stability
+    }
+}
